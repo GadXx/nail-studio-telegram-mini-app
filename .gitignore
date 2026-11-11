@@ -1,0 +1,16 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+
+# Salon-specific data, customer records, and uploaded files
+/data/*
+!/data/salon.example.json
+
+# Dependencies and local tooling
+node_modules/
+.DS_Store
+*.log
+coverage/
+.idea/
+.vscode/

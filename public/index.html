@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f2ed" />
+    <meta name="description" content="Онлайн-запись в nail-салон" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <title>Запись в салон</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://telegram.org/js/telegram-web-app.js?65"></script>
+    <script src="/app.js?v=3" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand" aria-label="Nail Studio">
+        <span class="brand-mark" aria-hidden="true">n.</span>
+        <span id="salon-name">Nail Studio</span>
+      </div>
+      <span class="topbar-note" id="topbar-note"><span class="status-dot"></span> Онлайн-запись</span>
+    </header>
+
+    <main>
+      <section class="view is-visible" id="client-view">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">ТВОЙ МОМЕНТ · ТВОЙ МАНИКЮР</p>
+            <h1>Время для<br /><em>себя.</em></h1>
+            <p class="hero-description">Выбери мастера и удобное время — остальное мы бережно сохраним.</p>
+            <div class="hero-note"><span class="sparkle">✳</span><span>Запись занимает всего пару минут</span></div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-ring ring-one"></div>
+            <div class="art-ring ring-two"></div>
+            <div class="art-flower">✿</div>
+            <div class="art-pill pill-one"></div>
+            <div class="art-pill pill-two"></div>
+            <div class="art-pill pill-three"></div>
+            <span class="art-label">NAIL<br />RITUAL</span>
+          </div>
+        </div>
+
+        <div class="client-layout" id="book">
+          <section class="booking-card">
+            <div class="card-heading">
+              <div>
+                <p class="eyebrow">ОНЛАЙН-ЗАПИСЬ</p>
+                <h2>Выбери время</h2>
+              </div>
+              <span class="step-badge">01 / 03</span>
+            </div>
+            <div class="form-section">
+              <label class="field-label">Мастер</label>
+              <div class="master-options" id="master-options" role="group" aria-label="Выбор мастера"></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-section">
+                <label class="field-label" for="booking-date">Дата</label>
+                <input class="text-input date-input" id="booking-date" type="date" />
+              </div>
+              <div class="form-section">
+                <span class="field-label">Свободное время</span>
+                <div class="slots" id="time-slots"><span class="muted">Сначала выбери мастера</span></div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <form id="booking-form">
+              <div class="form-grid details-grid">
+                <div class="form-section">
+                  <label class="field-label" for="customer-name">Как к тебе обращаться</label>
+                  <input class="text-input" id="customer-name" name="customerName" autocomplete="name" maxlength="80" placeholder="Твоё имя" required />
+                </div>
+                <div class="form-section">
+                  <label class="field-label" id="phone-label" for="customer-phone">Номер телефона</label>
+                  <input class="text-input" id="customer-phone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+7 900 000-00-00" />
+                  <p class="field-hint" id="phone-hint"></p>
+                </div>
+              </div>
+              <div class="form-section description-section">
+                <label class="field-label" for="description">Пожелания <span class="optional">необязательно</span></label>
+                <textarea class="text-input" id="description" name="description" rows="3" maxlength="1200" placeholder="Расскажи, что хотелось бы сделать"></textarea>
+              </div>
+              <div class="form-section photo-section">
+                <div class="photo-label-row">
+                  <span class="field-label">Фото для мастера <span class="optional">до 3 фото</span></span>
+                  <label class="upload-button" for="booking-photos">＋ Добавить фото</label>
+                </div>
+                <input id="booking-photos" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+                <div class="photo-previews" id="photo-previews"></div>
+              </div>
+              <div class="booking-footer">
+                <p class="privacy-note">Фото и пожелания увидит только выбранный мастер.</p>
+                <button class="button button-primary" id="submit-booking" type="submit" disabled>
+                  <span>Подтвердить запись</span><span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <aside class="booking-aside">
+            <div class="summary-card">
+              <p class="eyebrow">ТВОЯ ЗАПИСЬ</p>
+              <h3 id="summary-master">Выбери мастера</h3>
+              <div class="summary-row"><span>Дата</span><strong id="summary-date">—</strong></div>
+              <div class="summary-row"><span>Время</span><strong id="summary-time">—</strong></div>
+              <div class="summary-row"><span>Длительность</span><strong id="summary-duration">60 минут</strong></div>
+              <div class="summary-divider"></div>
+              <p class="summary-footnote">Если планы изменятся, позвони нам — поможем перенести запись.</p>
+            </div>
+            <div class="aside-message">
+              <span class="aside-icon">♡</span>
+              <p>Красивые руки начинаются с заботы о себе.</p>
+            </div>
+          </aside>
+        </div>
+        <div class="master-request-area" id="master-request-area">
+          <button class="text-button" id="request-master-access" type="button">Я мастер — запросить доступ</button>
+          <span class="field-hint" id="master-request-status" aria-live="polite"></span>
+        </div>
+      </section>
+
+      <section class="view master-view" id="master-view">
+        <div class="master-dashboard" id="dashboard-panel" hidden>
+          <div class="dashboard-heading">
+            <div><p class="eyebrow">РАБОЧЕЕ ПРОСТРАНСТВО</p><h1 id="master-greeting">Мой календарь</h1></div>
+            <span class="telegram-notice">Записи и расписание только для тебя</span>
+          </div>
+
+          <section class="master-panel">
+            <div class="section-heading"><div><p class="eyebrow">КАЖДЫЙ ДЕНЬ</p><h2>Мои рабочие часы</h2></div></div>
+            <p class="section-description">Этот график действует каждый день, пока ты его не изменишь.</p>
+            <form class="schedule-form" id="schedule-form">
+              <label>С <input class="text-input time-input" id="daily-start" type="time" step="1800" required /></label>
+              <label>До <input class="text-input time-input" id="daily-end" type="time" step="1800" required /></label>
+              <button class="button button-primary" type="submit">Сохранить часы</button>
+            </form>
+            <p class="field-hint" id="schedule-warning" aria-live="polite"></p>
+          </section>
+
+          <section class="master-panel">
+            <div class="section-heading"><div><p class="eyebrow">КАЛЕНДАРЬ</p><h2>Нерабочее время</h2></div></div>
+            <p class="section-description">Отметь выходной целиком или выбери часы. Существующие записи сохранятся.</p>
+            <form class="block-form" id="block-form">
+              <label>Дата <input class="text-input date-input" id="block-date" type="date" required /></label>
+              <label class="checkbox-label"><input id="block-all-day" type="checkbox" checked /> Весь день</label>
+              <div class="block-times" id="block-times" hidden>
+                <label>С <input class="text-input time-input" id="block-start" type="time" step="1800" /></label>
+                <label>До <input class="text-input time-input" id="block-end" type="time" step="1800" /></label>
+              </div>
+              <button class="button button-primary" type="submit">Отметить</button>
+            </form>
+            <p class="field-hint" id="block-warning" aria-live="polite"></p>
+            <div class="block-list" id="block-list"></div>
+          </section>
+
+          <section class="master-panel">
+            <div class="section-heading">
+              <div><p class="eyebrow">КАЛЕНДАРЬ</p><h2>Мои записи</h2></div>
+              <button class="small-button" id="toggle-create-booking" type="button">Создать запись ＋</button>
+            </div>
+            <div id="master-create-panel" hidden>
+              <div class="create-intro"><h3>Запись без данных клиента</h3><p>Выбери дату и свободное время.</p></div>
+              <div class="form-section create-date-wrap">
+                <label class="field-label" for="master-date">Дата</label>
+                <input class="text-input date-input" id="master-date" type="date" />
+              </div>
+              <div class="form-section">
+                <span class="field-label">Свободное время</span>
+                <div class="slots" id="master-time-slots"><span class="muted">Выбери дату</span></div>
+              </div>
+            </div>
+            <div class="appointments-list" id="appointments-list"></div>
+            <div class="pagination" id="appointments-pagination"></div>
+          </section>
+
+          <section class="master-panel team-panel" id="team-panel" hidden>
+            <div class="section-heading"><div><p class="eyebrow">УПРАВЛЕНИЕ САЛОНОМ</p><h2>Команда</h2></div></div>
+            <div class="team-requests" id="team-requests"></div>
+            <div class="team-list" id="team-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <dialog class="photo-modal" id="photo-modal"><button class="photo-modal-close" id="photo-modal-close" type="button" aria-label="Закрыть">×</button><img id="photo-modal-image" alt="Фото клиента" /></dialog>
+    <section class="telegram-gate" id="telegram-gate" aria-live="polite">
+      <div class="telegram-gate-card">
+        <span class="brand-mark" aria-hidden="true">n.</span>
+        <h1>Открой приложение<br /><em>в Telegram</em></h1>
+        <p id="telegram-gate-message">Подключаем Telegram…</p>
+        <a class="button button-primary" id="open-telegram-bot" href="https://t.me/" hidden>Открыть бота <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <footer class="footer"><span id="footer-name">Nail Studio</span><span>С любовью к деталям ✳</span></footer>
+  </body>
+</html>

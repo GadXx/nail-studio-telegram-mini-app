@@ -1,0 +1,10 @@
+{
+  "salonName": "Nail Studio",
+  "masters": [
+    {
+      "id": "main-master",
+      "name": "Главный мастер",
+      "telegramId": "123456789"
+    }
+  ]
+}
