@@ -1,8 +1,8 @@
-# Changelog
+# История изменений
 
-Notable changes to Nail Studio are recorded here. Dates use ISO 8601 format.
+Здесь перечислены заметные изменения Nail Studio. Даты указываются в формате ISO 8601.
 
-## Unreleased
+## В разработке
 
-- Prepared the Telegram Mini App for public repository use with safe configuration examples, deployment documentation, security guidance, and GitHub Actions syntax checks.
-- Added client booking, per-master availability, access requests, main-master team controls, appointment transfer, and photo viewing.
+- Подготовка Telegram Mini App к публикации: безопасные примеры настроек, документация развёртывания и безопасности, статическая проверка в GitHub Actions.
+- Запись клиентов, расписание мастеров, заявки на доступ, управление командой, переносы записей и просмотр фотографий.

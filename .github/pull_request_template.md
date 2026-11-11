@@ -1,16 +1,16 @@
-## What changed
+## Что изменилось
 
-<!-- Summarize the change and the user or operational problem it solves. -->
+<!-- Опиши изменение и проблему пользователя или эксплуатации, которую оно решает. -->
 
-## Verification
+## Проверка
 
-- [ ] `npm run check`
-- [ ] Manual verification completed where needed
+- [ ] Выполнена команда `npm run check`
+- [ ] При необходимости выполнена ручная проверка
 
-## Data and deployment impact
+## Влияние на данные и развёртывание
 
-- [ ] No database migration
-- [ ] Database migration described below
-- [ ] Deployment/configuration changes described below
+- [ ] Миграция базы не требуется
+- [ ] Миграция базы описана ниже
+- [ ] Изменения развёртывания и настроек описаны ниже
 
-<!-- Note any migration, rollback, or deployment requirements. -->
+<!-- Укажи требования к миграции, откату или развёртыванию. -->

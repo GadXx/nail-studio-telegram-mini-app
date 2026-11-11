@@ -1,105 +1,105 @@
 # Nail Studio
 
-**Telegram Mini App for appointment booking at a nail salon.** Clients book directly in Telegram; each master manages an individual calendar, while the main master manages team access and staff changes.
+**Telegram Mini App для записи на маникюр.** Клиенты записываются прямо в Telegram, мастера ведут личное расписание, а главный мастер управляет доступом команды и будущими записями.
 
-The application is built for a small salon that needs a focused booking workflow without a separate customer account system or a manually maintained staff list.
+Приложение рассчитано на один салон, которому нужен простой процесс записи без отдельного аккаунта клиента и ручного редактирования списка мастеров.
 
-## Product capabilities
+## Возможности
 
-### For clients
+### Клиентам
 
-- Browse active masters and available times across a rolling 14-day window.
-- Book with a Telegram username, or provide a phone number when no username is available.
-- Add an optional note and up to three reference photos.
-- Receive a Telegram message when a master moves or cancels an appointment, when delivery is possible.
+- Выбор действующего мастера и свободного времени на ближайшие 14 дней.
+- Запись по Telegram username или по номеру телефона, если username не указан.
+- Необязательное описание и до трёх фотографий-примеров.
+- Уведомление в Telegram при переносе или отмене записи, если доставка сообщения возможна.
 
-### For masters
+### Мастерам
 
-- Work from a single personal workspace with upcoming and past appointments.
-- Set daily working hours, starting at 10:00–20:00 by default.
-- Mark a date or time range as unavailable without silently changing existing appointments.
-- Create an appointment by reserving a free time slot.
-- Open client photos, cancel appointments, or move them to an available slot.
-- See when a client must be contacted manually after a failed Telegram notification.
+- Личное рабочее пространство с прошедшими и будущими записями.
+- Ежедневный график с 10:00 до 20:00 по умолчанию.
+- Возможность отметить выходной или закрыть отдельные часы, сохранив уже созданные записи.
+- Создание записи на свободное время без данных клиента.
+- Просмотр фотографий клиента, отмена записи и перенос на свободный слот.
+- Предупреждение, если клиенту нужно сообщить об изменении другим способом.
 
-### For the main master
+### Главному мастеру
 
-- Review staff access requests and edit a name before approval.
-- Transfer or explicitly cancel a staff member’s future appointments before deactivation.
-- Keep appointment history when a master is deactivated.
+- Рассмотрение заявок на доступ и редактирование имени мастера перед подтверждением.
+- Перенос или явная отмена будущих записей перед отключением мастера.
+- Сохранение истории после отключения мастера от новых записей.
 
-## Technology
+## Технологии
 
-- Node.js 20 or newer, ES modules
+- Node.js 20 или новее, ES Modules
 - Express 5
-- SQLite via `better-sqlite3`
-- Telegram Mini Apps authentication and Bot API notifications
-- Server-rendered static assets (HTML, CSS, browser JavaScript)
+- SQLite через `better-sqlite3`
+- Telegram Mini Apps для входа и Telegram Bot API для уведомлений
+- HTML, CSS и JavaScript без клиентского фреймворка
 
-## Run locally
+## Локальный запуск
 
-### 1. Configure Telegram
+### 1. Настрой Telegram
 
-Create a bot with [@BotFather](https://t.me/BotFather). Copy the examples and set the bot credentials:
+Создай бота через [@BotFather](https://t.me/BotFather). Скопируй примеры настроек:
 
 ```sh
 cp .env.example .env
 cp data/salon.example.json data/salon.json
 ```
 
-Edit `.env` and `data/salon.json`:
+Отредактируй `.env` и `data/salon.json`:
 
-- Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_BOT_USERNAME`.
-- Set `SESSION_SECRET` to a unique random value: `openssl rand -hex 32`.
-- Replace the example master’s Telegram ID with the ID of the main master. The first configured master becomes the main master on the first database initialization.
-- Keep `PUBLIC_APP_URL` empty for the initial local run.
+- Укажи `TELEGRAM_BOT_TOKEN` и `TELEGRAM_BOT_USERNAME`.
+- Задай уникальный `SESSION_SECRET`, например командой `openssl rand -hex 32`.
+- Замени Telegram ID главного мастера в примере. При первом создании базы главный мастер определяется по первой записи в конфигурации.
+- Оставь `PUBLIC_APP_URL` пустым для первого запуска на компьютере.
 
-### 2. Install and start
+### 2. Установи зависимости и запусти сервер
 
 ```sh
 npm ci
 npm start
 ```
 
-The server listens on port `3000` by default. Telegram requires a public HTTPS URL to open the Mini App. For a temporary development URL, expose the local server with a trusted HTTPS tunnel, then set `PUBLIC_APP_URL` to the issued HTTPS address and restart the application.
+По умолчанию сервер слушает порт `3000`. Для запуска Mini App Telegram требуется публичный HTTPS-адрес. Для разработки можно временно открыть локальный сервер через HTTPS-туннель, указать полученный адрес в `PUBLIC_APP_URL` и перезапустить приложение.
 
-## Configuration
+## Настройки
 
-| Variable | Required | Default | Purpose |
+| Переменная | Обязательна | Значение по умолчанию | Назначение |
 | --- | --- | --- | --- |
-| `SESSION_SECRET` | Yes | — | Express session signing secret; use a unique random value of at least 32 characters. |
-| `TELEGRAM_BOT_TOKEN` | For Telegram login | — | Bot API token from BotFather. |
-| `TELEGRAM_BOT_USERNAME` | With bot token | — | Bot username, with or without `@`. |
-| `PUBLIC_APP_URL` | For Mini App launch | — | Public HTTPS URL configured as the bot’s menu button. |
-| `SALON_CONFIG` | No | `data/salon.json` | Initial salon name and bootstrap master list. Used to seed an empty master database. |
-| `DATABASE_PATH` | No | `data/bookings.sqlite3` | SQLite database path for masters, appointments, and availability exceptions. |
-| `TIMEZONE` | No | `Europe/Moscow` | Time zone used for appointment dates and working hours. |
-| `PORT` | No | `3000` | HTTP port for the application server. |
-| `SLOT_STEP_MINUTES` | No | `30` | Interval between candidate appointment start times. |
-| `BOOKING_DURATION_MINUTES` | No | `60` | Length of each appointment. |
+| `SESSION_SECRET` | Да | — | Секрет подписи сессии; используй уникальное случайное значение длиной от 32 символов. |
+| `TELEGRAM_BOT_TOKEN` | Для входа через Telegram | — | Токен бота от BotFather. |
+| `TELEGRAM_BOT_USERNAME` | Если задан токен | — | Имя бота, с `@` или без него. |
+| `PUBLIC_APP_URL` | Для запуска Mini App | — | Публичный HTTPS-адрес, который откроет кнопка бота. |
+| `SALON_CONFIG` | Нет | `data/salon.json` | Начальная конфигурация салона и мастеров; используется для заполнения пустой базы. |
+| `DATABASE_PATH` | Нет | `data/bookings.sqlite3` | Путь к SQLite-базе записей, мастеров и календарных исключений. |
+| `TIMEZONE` | Нет | `Europe/Moscow` | Часовой пояс дат записи и расписания. |
+| `PORT` | Нет | `3000` | HTTP-порт приложения. |
+| `SLOT_STEP_MINUTES` | Нет | `30` | Шаг между возможными началами записи. |
+| `BOOKING_DURATION_MINUTES` | Нет | `60` | Продолжительность записи. |
 
-## Deployment
+## Развёртывание
 
-For a single Ubuntu server with Nginx, systemd, and a public HTTPS certificate, see [the deployment guide](docs/DEPLOYMENT.md). For architecture and data flow, see [the architecture overview](docs/ARCHITECTURE.md). For backups and routine operations, see [the operations guide](docs/OPERATIONS.md).
+Для Ubuntu-сервера с Nginx, systemd и публичным HTTPS смотри [руководство по развёртыванию](docs/DEPLOYMENT.md). Схема компонентов описана в [обзоре архитектуры](docs/ARCHITECTURE.md), резервные копии и ежедневные операции — в [руководстве эксплуатации](docs/OPERATIONS.md).
 
-The included `deploy/install-ubuntu.sh` provisions a fresh server. It expects the project and a configured `.env` in `/opt/nails`; it is an installation script, not an in-place upgrade tool.
+Скрипт `deploy/install-ubuntu.sh` устанавливает приложение на новый сервер. Он ожидает файлы проекта и настроенный `.env` в `/opt/nails`; скрипт не предназначен для обновления уже работающей установки.
 
-## Data and privacy
+## Данные и приватность
 
-Salon data is local to the deployment. The SQLite database contains appointments and Telegram identifiers needed for booking and notifications. Uploaded reference photos are stored under `data/uploads/`. Back up and protect the entire `data/` directory. Never commit `.env`, `data/salon.json`, SQLite files, customer data, or uploaded photos.
+Данные салона хранятся на сервере установки. В SQLite находятся записи и Telegram ID, необходимые для записи и уведомлений. Загруженные фото сохраняются в `data/uploads/`. Защищай резервные копии и храни всю папку `data/` отдельно от исходного кода.
 
-The repository includes only `.env.example` and `data/salon.example.json` templates. Replace all example values before starting a real deployment.
+Не добавляй в Git `.env`, `data/salon.json`, файлы SQLite, клиентские данные и фотографии. В репозитории находятся только безопасные шаблоны `.env.example` и `data/salon.example.json`; замени значения примера перед запуском.
 
-## Project checks
+## Проверки проекта
 
-Run the JavaScript syntax checks before opening a pull request:
+Перед pull request запусти проверку синтаксиса JavaScript:
 
 ```sh
 npm run check
 ```
 
-GitHub Actions runs the same check on pushes and pull requests. See [contribution guidelines](CONTRIBUTING.md) and [security policy](SECURITY.md).
+GitHub Actions запускает эту же проверку при отправке изменений и создании pull request. См. [правила участия](CONTRIBUTING.md) и [политику безопасности](SECURITY.md).
 
-## Current scope
+## Границы текущего проекта
 
-This application is designed for a single salon deployment with one main master, multiple masters, and Telegram as the client entry point. It does not include payments, service catalogs, multi-location support, or a public web booking flow.
+Приложение рассчитано на один салон, одного главного мастера, нескольких мастеров и запись через Telegram. В проект не входят оплата услуг, каталог услуг, несколько филиалов и запись через публичный сайт.

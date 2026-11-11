@@ -1,19 +1,19 @@
-# Operations
+# Эксплуатация
 
-## Service health
+## Состояние служб
 
 ```sh
 systemctl status nails-salon nginx --no-pager
 journalctl -u nails-salon -f
 ```
 
-The application currently exposes no unauthenticated health endpoint. A successful HTTPS response from the public app URL confirms that Nginx and the app can serve the UI; check the journal for Telegram polling and database errors.
+Сейчас приложение не предоставляет публичный health endpoint. Успешный HTTPS-ответ от публичного адреса подтверждает, что Nginx и приложение отдают интерфейс; ошибки бота и базы проверяй в журнале службы.
 
-## Backups
+## Резервное копирование
 
-The deployment's `data/` directory contains the booking database, session database, bootstrap salon configuration, and uploaded photos. Back up the complete directory together so appointment records and their photos remain aligned.
+В `data/` находятся база записей, база сессий, начальная конфигурация салона и загруженные фотографии. Копируй всю папку целиком, чтобы записи и фотографии оставались согласованы.
 
-For a consistent file-level backup, stop the service briefly:
+Для согласованной файловой копии можно ненадолго остановить службу:
 
 ```sh
 systemctl stop nails-salon
@@ -21,27 +21,27 @@ tar -czf "/root/nails-data-$(date +%F-%H%M%S).tar.gz" -C /opt/nails data
 systemctl start nails-salon
 ```
 
-Store copies away from the server and restrict access to them. Verify backups by periodically restoring a copy to a separate, non-production directory.
+Храни копии отдельно от сервера и ограничь доступ к ним. Периодически проверяй восстановление копии в отдельную непроизводственную папку.
 
-## Restore
+## Восстановление
 
-1. Stop `nails-salon`.
-2. Preserve the current `/opt/nails/data` directory in case the restore needs to be reversed.
-3. Restore the selected archive under `/opt/nails` so it recreates `/opt/nails/data`.
-4. Restore ownership for the service account: `chown -R nails:nails /opt/nails/data`.
-5. Start the service and review `journalctl -u nails-salon`.
+1. Останови `nails-salon`.
+2. Сохрани текущую `/opt/nails/data`, чтобы можно было отменить восстановление.
+3. Распакуй выбранный архив в `/opt/nails`, чтобы он восстановил `/opt/nails/data`.
+4. Восстанови владельца служебного пользователя: `chown -R nails:nails /opt/nails/data`.
+5. Запусти приложение и проверь `journalctl -u nails-salon`.
 
-## Common issues
+## Частые проблемы
 
-| Symptom | First checks |
+| Симптом | Что проверить сначала |
 | --- | --- |
-| Mini App does not open | Confirm `PUBLIC_APP_URL` is HTTPS and matches the public Nginx origin; check `systemctl status nginx nails-salon`. |
-| Bot polling reports a conflict | Ensure only one server process is polling with this bot token. |
-| Bot notifications fail | Ask the recipient to send `/start` to the bot; confirm the bot token and outbound network access. |
-| No masters appear | Confirm `data/bookings.sqlite3` exists and the first-time `data/salon.json` contains at least one master with a numeric Telegram ID. |
-| Photos fail to load | Check that the booking belongs to the signed-in master and that `data/uploads/` remains readable by the `nails` service user. |
-| HTTPS certificate renewal fails | Check Nginx port 80 reachability and `systemctl list-timers snap.certbot.renew.timer`. |
+| Mini App не открывается | Проверь, что `PUBLIC_APP_URL` использует HTTPS и совпадает с публичным адресом Nginx; проверь `systemctl status nginx nails-salon`. |
+| Бот сообщает о конфликте polling | Убедись, что с этим токеном работает только один процесс бота. |
+| Не приходят уведомления | Попроси получателя отправить боту `/start`; проверь токен и исходящий доступ к сети. |
+| Нет мастеров в списке | Проверь наличие `data/bookings.sqlite3`; при первом запуске в `data/salon.json` должен быть мастер с числовым Telegram ID. |
+| Фото не открываются | Убедись, что запись принадлежит вошедшему мастеру и пользователь `nails` может читать `data/uploads/`. |
+| Не обновляется HTTPS-сертификат | Проверь доступность порта 80 и таймер командой `systemctl list-timers snap.certbot.renew.timer`. |
 
-## Data retention
+## Срок хранения данных
 
-Deactivating a master hides them from new bookings and preserves their history. Canceling an appointment changes its status. Deleting an appointment is permanent and also removes its uploaded photo files.
+Отключение мастера скрывает его от новых записей и сохраняет историю. Отмена меняет статус записи. Удаление записи необратимо и также удаляет загруженные к ней фотографии.

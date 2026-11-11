@@ -1,30 +1,30 @@
-# Deployment guide
+# Руководство по развёртыванию
 
-This guide covers a single Ubuntu 24.04 server deployment using Nginx, systemd, SQLite, and HTTPS. The application process listens on localhost; Nginx is the public entry point.
+Инструкция описывает установку на один сервер Ubuntu 24.04 с Nginx, systemd, SQLite и HTTPS. Приложение слушает локальный порт; внешние запросы принимает Nginx.
 
-## Prerequisites
+## Требования
 
-- A public server with inbound TCP ports 80 and 443 available.
-- Node.js 20 or newer and npm (the install script configures Node.js 22).
-- A Telegram bot created with [@BotFather](https://t.me/BotFather).
-- The public HTTPS URL for the Mini App.
+- Сервер с публичным IP-адресом и доступными входящими портами TCP 80 и 443.
+- Node.js версии 20 или новее и npm (скрипт установки настраивает Node.js 22).
+- Telegram-бот, созданный через [@BotFather](https://t.me/BotFather).
+- Публичный HTTPS-адрес Mini App.
 
-## Configure the first deployment
+## Первичная настройка
 
-1. Put the project files in `/opt/nails`.
-2. Create `/opt/nails/.env` from `.env.example` and set a unique session secret, bot token, bot username, HTTPS app URL, and any non-default settings.
-3. Create `/opt/nails/data/salon.json` from `data/salon.example.json`; set the real salon name and main master's Telegram ID. The first master is the main master only when the database is first created.
-4. Run the provisioning script as root with the server's public IP:
+1. Размести файлы проекта в `/opt/nails`.
+2. Создай `/opt/nails/.env` на основе `.env.example`. Укажи уникальный секрет сессии, токен и имя бота, HTTPS-адрес приложения и необходимые параметры.
+3. Создай `/opt/nails/data/salon.json` на основе `data/salon.example.json`. Укажи название салона и Telegram ID главного мастера. Только при первом создании базы главным становится первый мастер в этом файле.
+4. Запусти скрипт настройки от `root`, указав публичный IP сервера:
 
    ```sh
-   bash /opt/nails/deploy/install-ubuntu.sh YOUR_PUBLIC_IP
+   bash /opt/nails/deploy/install-ubuntu.sh ВАШ_ПУБЛИЧНЫЙ_IP
    ```
 
-The script installs Node.js, Nginx, and Certbot; installs production dependencies; configures the `nails-salon` systemd service; and requests a short-lived IP certificate. Review the script before running it on a server with existing services. It refuses to proceed if ports 80, 443, or 3000 are already occupied.
+Скрипт устанавливает Node.js, Nginx и Certbot, ставит зависимости для production, настраивает systemd-службу `nails-salon` и запрашивает краткосрочный сертификат для IP-адреса. Перед запуском на сервере с другими службами просмотри содержимое скрипта. Он остановится, если порты 80, 443 или 3000 уже заняты.
 
-## Configure the Telegram Mini App
+## Настройка Telegram Mini App
 
-Set `PUBLIC_APP_URL` to the exact HTTPS origin used by Nginx and `TELEGRAM_BOT_USERNAME` to the matching bot username. Restart the service after editing `.env`:
+В `.env` укажи точный HTTPS-адрес, обслуживаемый Nginx, в `PUBLIC_APP_URL`, а в `TELEGRAM_BOT_USERNAME` — имя соответствующего бота. После изменения `.env` перезапусти службу:
 
 ```sh
 systemctl restart nails-salon
@@ -32,11 +32,11 @@ systemctl status nails-salon nginx --no-pager
 journalctl -u nails-salon -n 50 --no-pager
 ```
 
-Open the bot and send `/start` from the main master account and each master's account. Telegram only allows the bot to send personal notifications after the recipient has started the bot.
+Главный мастер и остальные мастера должны открыть бота и отправить `/start`. Telegram разрешает боту отправлять личные уведомления только после этого.
 
-## Updating an existing installation
+## Обновление действующей установки
 
-An update must preserve the server's `.env` and entire `data/` directory. Never replace these with development copies. Stop the service, back up state, unpack only the release files into `/opt/nails`, then start the service:
+При обновлении сохрани серверные `.env` и всю папку `data/`. Не заменяй их локальными копиями. Останови службу, сделай резервную копию, распакуй файлы релиза в `/opt/nails` и запусти приложение:
 
 ```sh
 systemctl stop nails-salon
@@ -47,15 +47,15 @@ systemctl status nails-salon --no-pager
 journalctl -u nails-salon -n 50 --no-pager
 ```
 
-The release archive should contain application source, `public/`, documentation, and package manifests. It must not contain `.env`, `data/`, or `node_modules/`. If dependencies change in a future release, run `npm ci --omit=dev` from `/opt/nails` before restarting.
+В архив релиза должны входить исходный код приложения, папка `public/`, документация и манифесты npm. В нём не должно быть `.env`, `data/` и `node_modules/`. Если в новом релизе изменились зависимости, перед перезапуском выполни из `/opt/nails` команду `npm ci --omit=dev`.
 
-## Reverse proxy expectations
+## Требования к reverse proxy
 
-The deployment script configures Nginx to:
+Скрипт настраивает Nginx так, чтобы он:
 
-- redirect HTTP to HTTPS (while allowing the ACME challenge path),
-- forward requests to `127.0.0.1:3000`,
-- pass the original host and HTTPS protocol,
-- allow image uploads up to 18 MiB total.
+- перенаправлял HTTP на HTTPS, кроме пути ACME challenge;
+- передавал запросы на `127.0.0.1:3000`;
+- передавал исходный Host и HTTPS-протокол;
+- принимал загрузки фото общим размером до 18 МиБ.
 
-Keep port 3000 bound to localhost behind Nginx. Do not expose it directly to the internet.
+Оставь порт 3000 доступным только через localhost за Nginx. Не открывай его напрямую в интернет.

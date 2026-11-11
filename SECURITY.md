@@ -1,17 +1,17 @@
-# Security policy
+# Политика безопасности
 
-## Supported versions
+## Поддерживаемые версии
 
-Only the latest version on the default branch is supported at this stage. Deployments should use a current Node.js LTS release and keep dependencies updated.
+На этом этапе поддерживается только последняя версия из основной ветки. Для установки используй актуальную LTS-версию Node.js и регулярно обновляй зависимости.
 
-## Reporting a vulnerability
+## Сообщение об уязвимости
 
-Please do not report security vulnerabilities in public issues. Use GitHub's private vulnerability reporting or security advisory feature if it is enabled for this repository. Include the affected version, impact, and a minimal reproduction where possible. Do not include real Telegram IDs, bot tokens, customer records, session cookies, or customer photos.
+Не публикуй сведения об уязвимости в открытых issues. Если для репозитория включена функция GitHub Private Vulnerability Reporting или Security Advisories, сообщи об уязвимости через неё. Укажи затронутую версию, возможное влияние и краткий способ воспроизведения. Не прикладывай реальные Telegram ID, токены бота, данные клиентов, cookie сессий или фотографии.
 
-## Deployment security
+## Безопасность установки
 
-- Store bot tokens and session secrets only in `.env` or a dedicated secret manager.
-- Serve the Mini App over HTTPS and keep the Node.js port private behind Nginx.
-- Keep `data/` private and restrict access to backups.
-- Rotate the bot token through BotFather if it has been exposed.
-- Treat Telegram IDs, booking details, phone numbers, and uploaded reference photos as private customer data.
+- Храни токен бота и секрет сессии только в `.env` или специализированном хранилище секретов.
+- Используй HTTPS и оставляй порт Node.js закрытым за Nginx.
+- Ограничь доступ к `data/` и резервным копиям.
+- Если токен бота раскрыт, замени его через BotFather.
+- Считай Telegram ID, записи, номера телефонов и фотографии клиентов приватными данными.
